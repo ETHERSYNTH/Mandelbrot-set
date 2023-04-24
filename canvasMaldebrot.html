@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas</title>
+	</head>
+	<body>
+		<canvas id="canvas" width="200" height="200"></canvas>
+		<script>
+		// Здесь будет JavaScript-код
+		// Создаем холст и добавляем его на страницу
+		let canvas = document.createElement('canvas');
+		canvas.width = 800;
+		canvas.height = 800;
+		document.body.appendChild(canvas);
+
+		// Получаем контекст для рисования
+		let ctx = canvas.getContext('2d');
+
+		// Устанавливаем максимальное количество итераций
+		let maxIterations = 1;
+		
+
+		// Рисуем множество Мандельброта
+		function draw() {
+		  maxIterations++;
+		  // Проходим по каждой точке холста
+		  for (let x = 0; x < canvas.width; x++) {
+			for (let y = 0; y < canvas.height; y++) {
+			  // Находим соответствующее комплексное число
+			  let c = {
+				re: (x - canvas.width / 2) / (canvas.width / 4),
+				im: (y - canvas.height / 2) / (canvas.width / 4)
+			  };
+
+			  // Начальное значение z = 0
+			  let z = { re: 0, im: 0 };
+
+			  // Производим итерации
+			  let i;
+			  for (i = 0; i < maxIterations; i++) {
+				// Новое значение z = z^2 + c
+				let newZ = {
+				  re: z.re * z.re - z.im * z.im + c.re,
+				  im: 2 * z.re * z.im + c.im
+				};
+
+				// Если значение z выходит за пределы множества, закрашиваем точку красным цветом и прерываем итерации
+				if (newZ.re * newZ.re + newZ.im * newZ.im > 4) {
+				  ctx.fillStyle = '#4B0082';//'#f00';
+				  ctx.fillRect(x, y, 1, 1);
+				  break;
+				}
+
+				// Присваиваем новое значение z для следующей итерации
+				z = newZ;
+			  }
+
+			  // Если мы прошли все итерации, закрашиваем точку черным цветом
+			  if (i === maxIterations) {
+				ctx.fillStyle = '#000';
+				ctx.fillRect(x, y, 1, 1);
+			  }
+			}
+		  }
+		  // Вызываем функцию рисования снова через 1000 миллисекунд
+		  setTimeout(draw, 1000);
+		}
+
+		// Вызываем функцию рисования
+		draw();
+		</script>
+	</body>
+</html>
